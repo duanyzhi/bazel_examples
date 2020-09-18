@@ -1,0 +1,49 @@
+workspace(name="org_pytorch")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(                                                                                                                                                                                                   
+    name = "rules_python",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.0.2/rules_python-0.0.2.tar.gz",
+    strip_prefix = "rules_python-0.0.2", 
+    sha256 = "b5668cde8bb6e3515057ef465a35ad712214962f0b3a314e551204266c7be90c", 
+)
+load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
+load("@rules_python//python:whl.bzl", "whl_library")
+
+pip_repositories()
+
+# Create a central repo that knows about the dependencies needed for
+# requirements.txt.
+pip3_import(   # or pip3_import
+   name = "my_deps",
+   requirements = "@org_pytorch//:requirements.txt",
+)
+
+
+load("@my_deps//:requirements.bzl", _my_install = "pip_install")
+_my_install()
+
+
+# install whl from web
+#http_archive(                                                                                                                                                                                                   
+#    name = "pytorch_whl",
+#    url = "https://download.pytorch.org/whl/cpu/torch-1.6.0%2Bcpu-cp38-cp38-linux_x86_64.whl",
+#    sha256 = "d960ae9be1a261906a781a5ef5a3b44ac9cde71ff18af1c4864a37b4d08a493c",
+#)
+
+## install local *.whl
+new_local_repository(
+    name = "pytorch_whl",
+    path = "data/",   # you can just using data/, not /data !
+    # or path = "absolute/path/to/whl"
+    build_file = "@org_pytorch//data:BUILD",
+)
+
+whl_library(
+    name = "pytorch_whl_install",
+    python_interpreter = "python3",
+    #whl = "@pytorch_whl//:torch-1.6.0+cpu-cp36-cp36m-linux_x86_64.whl",  # torch shold match python
+    whl = "@pytorch_whl//:torch-1.6.0+cpu-cp38-cp38-linux_x86_64.whl",
+    extras = [],
+    requirements = "@my_deps//:requirements.bzl",
+)
