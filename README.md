@@ -44,3 +44,18 @@ cc_library(
 ```
 
 generated下面的header.h是生成的。_virtual_includes下面的内容可以直接在.cc文件中导入。其中include文件夹对应的是cc_library的name，include下面的header.h就是cc_library中的hdrs内容。可以直接在main.cpp函数中直接使用:#include <header.h> ，这里可以用导入系统库的形式<>来导入头文件了。
+
+
+
+## 2. pip install whl and requirements.txt
+
+环境:
+
+```shell
+python3.8
+torch1.6
+bazel-3.1.0
+```
+
+
+
