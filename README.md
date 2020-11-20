@@ -59,3 +59,7 @@ bazel-3.1.0
 
 
 
+```
+visibility = ["//__pkg__"], 对当前WORKSPACE的所有BUILD可见
+strip_prefix   # 解压出来的文件夹的名称
+```
